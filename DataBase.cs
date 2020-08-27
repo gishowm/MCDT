@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Transactions;
@@ -40,6 +41,16 @@ namespace MCDT
         public DataBase()
         {
             if (string.IsNullOrEmpty(conStr)) throw new Exception("数据库未配置！请使用Set方法设置。");
+        }
+
+
+        public void Inserts(string table, DataTable dt)
+        {
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conStr, SqlBulkCopyOptions.KeepIdentity))
+            {
+                bulkCopy.DestinationTableName = table;//数据库中的表名
+                bulkCopy.WriteToServer(dt);
+            }
         }
 
 
@@ -171,7 +182,7 @@ namespace MCDT
         /// <returns>SqlParameter[]</returns>
         private List<SqlParameter> GetParameterListByModel(dynamic model)
         {
-            if (model == null) return null;
+            if (model == null) return new List<SqlParameter>();
             List<SqlParameter> parms = new List<SqlParameter>();
             try
             {
@@ -282,7 +293,7 @@ namespace MCDT
                             data = sdr.GetValue(i);
                             if (data == DBNull.Value)
                                 data = null;
-                            json.Add(sdr.GetName(i), data.ToString());
+                            json.Add(sdr.GetName(i), data == null ? "" : data.GetType().Name == "DateTime" ? ((DateTime)data).ToString("yyyy-MM-dd HH:mm:ss") : data);
                         }
                         ret.Add(json);
                     }
@@ -292,6 +303,13 @@ namespace MCDT
         }
 
 
+        public JSON Query(string sql, int index, dynamic parms = null)
+        {
+            var result = Query(sql, parms);
+            if (result.Count > index)
+                return result[index];
+            return null;
+        }
         /// <summary>
         /// 分页查询
         /// </summary>

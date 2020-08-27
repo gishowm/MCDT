@@ -12,6 +12,11 @@ namespace MCDT
 {
     public static class Function
     {
+        private static void Test()
+        {
+
+        }
+
         #region 时间扩展
         public static string ToDateTimeString(this DateTime dateTime)
         {
@@ -193,5 +198,9 @@ namespace MCDT
             }
             return t;
         }
+
+        //public long GetTime() {
+        //    DateTime.Now.Millisecond.ToString()
+        //}
     }
 }

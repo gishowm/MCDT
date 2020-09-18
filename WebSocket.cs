@@ -9,10 +9,10 @@ namespace MCDT
 {
     public class WebSocket
     {
+        static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
         public static void Init(string remote, int port)
         {
             FleckLog.Level = LogLevel.Debug;
-            var allSockets = new List<IWebSocketConnection>();
             var server = new WebSocketServer("ws://" + remote + ":" + port);
             server.Start(socket =>
             {

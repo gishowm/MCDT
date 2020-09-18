@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS2012: 无法打开“D:\gishowm\projects\Tester\obj\Debug\Tester.exe”进行写入 --“对路径“D:\gishowm\projects\Tester\obj\Debug\Tester.exe”的访问被拒绝。”
+dotnet_diagnostic.CS2012.severity = error

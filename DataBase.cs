@@ -338,10 +338,13 @@ namespace MCDT
 
         public List<JSON> Query(string sql, int page, int limit, out int total, string shortBy = "id", string orderBy = "desc", dynamic parms = null)
         {
-            string pageSql = @"select top (" + limit + @") * from(
-                               select row_number() over(order by " + shortBy + " " + orderBy + @") as rownumber, *from
-                               (" + sql + @")__tempTable
-                               )temp_table where rownumber > (" + page + " - 1) * " + limit;
+            string pageSql = @"WITH CTE AS(
+    SELECT    ROW_NUMBER() OVER (order by " + shortBy + " " + orderBy + @") AS number,
+	*
+    FROM  (" + sql + @")__tempTable
+) 
+SELECT * FROM CTE
+WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + limit + ";";
             string countSql = "select count(0) from (" + sql + ")pager";
             total = ExecuteScalar(countSql, parms);
             return Query(pageSql, parms);

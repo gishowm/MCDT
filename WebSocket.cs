@@ -26,10 +26,7 @@ namespace MCDT
                 };
                 socket.OnMessage = message =>
                 {
-                    //allSockets.ToList().ForEach(
-                    //    s =>
-                    //s.Send("Echo: " + message)
-                    //);
+                    
                     socket.Send("AAA Yeah!");
                 };
             });

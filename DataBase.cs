@@ -69,12 +69,25 @@ namespace MCDT
             List<string> keys = new List<string>();
             List<string> colums = new List<string>();
 
-            foreach (var item in pros)
+
+            if (model is Dictionary<string, object>)
             {
-                if (item.GetValue(model) != null)
+                foreach (var item in model as Dictionary<string, object>)
                 {
-                    keys.Add(item.Name);
-                    colums.Add("@" + item.Name);
+                    keys.Add(item.Key);
+                    colums.Add("@" + item.Key);
+                }
+            }
+            else
+            {
+
+                foreach (var item in pros)
+                {
+                    if (item.GetValue(model) != null)
+                    {
+                        keys.Add(item.Name);
+                        colums.Add("@" + item.Name);
+                    }
                 }
             }
             string sql = "insert into  " + tableName + "(" + string.Join(",", keys.ToArray()) + ") output inserted." + identityFiled + " values(" + string.Join(",", colums.ToArray()) + ")";
@@ -97,13 +110,27 @@ namespace MCDT
             Type type = model.GetType();
             var pros = type.GetProperties();
             List<string> keys = new List<string>();
-            foreach (var item in pros)
+
+
+            if (model is Dictionary<string, object>)
             {
-                if (item.GetValue(model) != null)
+                foreach (var item in model as Dictionary<string, object>)
                 {
-                    keys.Add(item.Name + "=@" + item.Name);
+                    keys.Add(item.Key + "=@" + item.Key);
                 }
             }
+            else
+            {
+
+                foreach (var item in pros)
+                {
+                    if (item.GetValue(model) != null)
+                    {
+                        keys.Add(item.Name + "=@" + item.Name);
+                    }
+                }
+            }
+
             string sql = "update " + tableName + " set " + string.Join(",", keys.ToArray()) + " where " + condition;
             return getSqlCommand(sql, (com) =>
             {
@@ -187,33 +214,31 @@ namespace MCDT
             try
             {
                 Type parmType = model.GetType();
-                switch (parmType.Name)
+                if (model is Dictionary<string, object>)
                 {
-
-                    case "JSON":
-                        foreach (var item in model)
+                    foreach (var item in model)
+                    {
+                        parms.Add(new SqlParameter
+                        {
+                            ParameterName = item.Key,
+                            Value = item.Value
+                        });
+                    }
+                }
+                else
+                {
+                    var proarr = parmType.GetProperties();
+                    foreach (var item in proarr)
+                    {
+                        if (item.GetValue(model) != null)
                         {
                             parms.Add(new SqlParameter
                             {
-                                ParameterName = item.Key,
-                                Value = item.Value
+                                ParameterName = item.Name,
+                                Value = item.GetValue(model)
                             });
                         }
-                        break;
-                    default:
-                        var proarr = parmType.GetProperties();
-                        foreach (var item in proarr)
-                        {
-                            if (item.GetValue(model) != null)
-                            {
-                                parms.Add(new SqlParameter
-                                {
-                                    ParameterName = item.Name,
-                                    Value = item.GetValue(model)
-                                });
-                            }
-                        }
-                        break;
+                    }
                 }
 
                 return parms;

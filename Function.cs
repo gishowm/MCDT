@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -199,8 +201,75 @@ namespace MCDT
             return t;
         }
 
-        //public long GetTime() {
-        //    DateTime.Now.Millisecond.ToString()
-        //}
+
+        #region Request.From扩展
+        public static T ToModel<T>(this NameValueCollection form) where T : class, new()
+        {
+            T objmodel = new T();
+            foreach (PropertyInfo info in typeof(T).GetProperties())
+            {
+                string name = info.Name;
+
+                if (form.GetValues(name) != null)
+                {
+                    //如果不是泛型
+                    if (!info.PropertyType.IsGenericType)
+                    {
+                        //如果是空则设置空，非空则设置值。
+                        info.SetValue(objmodel, string.IsNullOrEmpty(form.GetValues(name).ToString()) ? null : Convert.ChangeType(form.GetValues(name), info.PropertyType), null);
+                    }
+                    //如果是泛型，则找他的基础类型
+                    else if (info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        info.SetValue(objmodel, string.IsNullOrEmpty(form.GetValues(name).ToString()) ? null : Convert.ChangeType(form.GetValues(name), Nullable.GetUnderlyingType(info.PropertyType)), null);
+                    }
+                }
+            }
+            return objmodel;
+        }
+        #endregion
+
+        public static JSON ToJSON(this NameValueCollection form)
+        {
+            JSON json = new JSON();
+            foreach (string item in form.Keys)
+            {
+                if (string.IsNullOrEmpty(form[item])) continue;
+                json[item] = form[item];
+            }
+            return json;
+        }
+
+        public static long GetTimeStamp(DateTime dateTime)
+        {
+            TimeSpan ts = dateTime - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds);
+        }
+
+
+        public static long GetTimeStamp()
+        {
+            TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds);
+        }
+        public static long TimeStamp(this DateTime dateTime)
+        {
+            TimeSpan ts = dateTime - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds);
+        }
+
+        /// <summary>  
+        /// 时间戳Timestamp转换成日期  
+        /// </summary>  
+        /// <param name="timeStamp"></param>  
+        /// <returns></returns>  
+        public static DateTime GetDateTime(long timeStamp)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            long lTime = ((long)timeStamp * 10000000);
+            TimeSpan toNow = new TimeSpan(lTime);
+            DateTime targetDt = dtStart.Add(toNow);
+            return targetDt;
+        }
     }
 }

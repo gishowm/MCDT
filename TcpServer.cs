@@ -54,7 +54,7 @@ namespace MCDT
         /// </summary>
         /// <param name="ipaddress">IP地址</param>
         /// <param name="port">监听端口</param>
-        public  void InitSocket(IPAddress ipaddress, int port)
+        public void InitSocket(IPAddress ipaddress, int port)
         {
             Ipaddress = ipaddress;
             Port = port;
@@ -65,7 +65,7 @@ namespace MCDT
         /// </summary>
         /// <param name="ipaddress">IP地址</param>
         /// <param name="port">监听端口</param>
-        public  void InitSocket(string ipaddress, int port)
+        public void InitSocket(string ipaddress, int port)
         {
             Ipaddress = IPAddress.Parse(ipaddress);
             Port = port;
@@ -75,7 +75,7 @@ namespace MCDT
         /// <summary>
         /// 启动监听,并处理连接
         /// </summary>
-        public  void Start()
+        public void Start()
         {
             try
             {
@@ -105,7 +105,7 @@ namespace MCDT
         /// <summary>
         /// 停止
         /// </summary>
-        public  void Stop()
+        public void Stop()
         {
             if (listener != null)
             {
@@ -228,7 +228,7 @@ namespace MCDT
             }
             catch (Exception ex)
             {
-                //Console.Write(ex.Message);
+                Console.Write(ex.Message);
             }
         }
         /// <summary>

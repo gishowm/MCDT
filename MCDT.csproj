@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncTaskQueue.cs" />
+    <Compile Include="Current.cs" />
     <Compile Include="DataBase.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="JSON.cs" />

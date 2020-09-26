@@ -21,6 +21,7 @@ namespace MCDT
             return json;
         }
 
+
         public static JSON Form(JSON obj)
         {
             JSON json = new JSON();
@@ -33,29 +34,29 @@ namespace MCDT
 
         public string String(string key)
         {
-            if (!this.Keys.Contains(key)) throw new Exception("Key:" + key + "Is Not Found");
+            if (!this.Keys.Contains(key)) throw new Exception("Key:\"" + key + "\" Is Not Found");
             return this[key].ToString();
         }
         public int Int(string key)
         {
-            if (!this.Keys.Contains(key)) throw new Exception("Key:" + key + "Is Not Found");
+            if (!this.Keys.Contains(key)) throw new Exception("Key:\"" + key + "\" Is Not Found");
             return Convert.ToInt32(this[key]);
 
         }
         public decimal Decimal(string key)
         {
-            if (!this.Keys.Contains(key)) throw new Exception("Key:" + key + "Is Not Found");
+            if (!this.Keys.Contains(key)) throw new Exception("Key:\"" + key + "\" Is Not Found");
             return Convert.ToDecimal(this[key]);
         }
 
         public double Double(string key)
         {
-            if (!this.Keys.Contains(key)) throw new Exception("Key:" + key + "Is Not Found");
+            if (!this.Keys.Contains(key)) throw new Exception("Key:\"" + key + "\" Is Not Found");
             return Convert.ToDouble(this[key]);
         }
         public bool Boolean(string key)
         {
-            if (!this.Keys.Contains(key)) throw new Exception("Key:" + key + "Is Not Found");
+            if (!this.Keys.Contains(key)) throw new Exception("Key:\"" + key + "\" Is Not Found");
             return Convert.ToBoolean(this[key]);
         }
 
@@ -70,6 +71,8 @@ namespace MCDT
                 throw new Exception("转换JsonString失败:" + ex.Message);
             }
         }
+
+      
 
     }
 }

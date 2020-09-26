@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -246,7 +247,19 @@ namespace MCDT
             return Convert.ToInt64(ts.TotalSeconds);
         }
 
+        public static JSON toJSON(this string jstr)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<JSON>(jstr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("转换 JSON 失败:" + ex.Message);
+            }
 
+
+        }
         public static long GetTimeStamp()
         {
             TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);

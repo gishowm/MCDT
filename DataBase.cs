@@ -20,10 +20,6 @@ namespace MCDT
         }
 
         public SqlConnection Conne;
-        /// <summary>
-        /// 连接字符串
-        /// </summary>
-        private static string conStr = "";
 
         /// <summary>
         /// 连接字符串
@@ -31,22 +27,19 @@ namespace MCDT
         /// <param name="connStr"></param>
         public DataBase(string str)
         {
-            conStr = str;
             Conne = new SqlConnection(str);
         }
         public DataBase(string Server, string DBName, string LoginUser, string Pwd)
         {
-            conStr = string.Format("server={0};database={1};user id={2};password={3}", Server, DBName, LoginUser, Pwd);
-        }
-        public DataBase()
-        {
-            if (string.IsNullOrEmpty(conStr)) throw new Exception("数据库未配置！请使用Set方法设置。");
+            string conStr = string.Format("server={0};database={1};user id={2};password={3}", Server, DBName, LoginUser, Pwd);
+
+            Conne = new SqlConnection(conStr);
         }
 
 
         public void Inserts(string table, DataTable dt)
         {
-            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conStr, SqlBulkCopyOptions.KeepIdentity))
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(Conne.ConnectionString, SqlBulkCopyOptions.KeepIdentity))
             {
                 bulkCopy.DestinationTableName = table;//数据库中的表名
                 bulkCopy.WriteToServer(dt);

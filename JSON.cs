@@ -25,7 +25,10 @@ namespace MCDT
             }
             set
             {
-                base.Add(key, value);
+                if (base.ContainsKey(key))
+                    base[key] = value;
+                else
+                    base.Add(key, value);
             }
         }
 

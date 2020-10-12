@@ -11,6 +11,24 @@ namespace MCDT
 {
     public class JSON : Dictionary<string, object>
     {
+
+        public object this[string key]
+        {
+            get
+            {
+                if (base.ContainsKey(key))
+                    return base[key];
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                base.Add(key, value);
+            }
+        }
+
         public static JSON From(NameValueCollection obj)
         {
             JSON json = new JSON();
@@ -72,7 +90,7 @@ namespace MCDT
             }
         }
 
-      
+
 
     }
 }

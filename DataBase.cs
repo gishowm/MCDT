@@ -95,9 +95,16 @@ namespace MCDT
             return Convert.ToInt32(index);
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="condition"></param>
+        /// <param name="model"></param>
+        /// <param name="Ignores">忽略更新的字段</param>
+        /// <returns></returns>
 
-
-        public int? Update(string tableName, string condition, dynamic model)
+        public int? Update(string tableName, string condition, dynamic model, params string[] Ignores)
         {
             List<SqlParameter> parms = GetParameterListByModel(model);
             Type type = model.GetType();
@@ -109,6 +116,7 @@ namespace MCDT
             {
                 foreach (var item in model as Dictionary<string, object>)
                 {
+                    if (Ignores.ToList<string>().Contains(item.Key)) continue;
                     keys.Add(item.Key + "=@" + item.Key);
                 }
             }
@@ -117,6 +125,7 @@ namespace MCDT
 
                 foreach (var item in pros)
                 {
+                    if (Ignores.ToList<string>().Contains(item.Name)) continue;
                     if (item.GetValue(model) != null)
                     {
                         keys.Add(item.Name + "=@" + item.Name);

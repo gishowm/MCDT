@@ -230,12 +230,37 @@ namespace MCDT
         }
         #endregion
 
-        public static JSON ToJSON(this NameValueCollection form)
+        /// <summary>
+        /// toJSON
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="ignoreNull">是否排除空值，默认排除</param>
+        /// <returns></returns>
+        public static JSON ToJSON(this NameValueCollection form, bool ignoreNull = true)
         {
             JSON json = new JSON();
             foreach (string item in form.Keys)
             {
-                if (string.IsNullOrEmpty(form[item])) continue;
+                if (ignoreNull)
+                    if (string.IsNullOrEmpty(form[item])) continue;
+                json[item] = form[item];
+            }
+            return json;
+        }
+
+        /// <summary>
+        /// toJSON
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="Ignore">此数组内的键如果是空值将不会被过滤</param>
+        /// <returns></returns>
+        public static JSON ToJSON(this NameValueCollection form, params string[] Ignore)
+        {
+            JSON json = new JSON();
+            foreach (string item in form.Keys)
+            {
+                if (!Ignore.Contains(item))
+                    if (string.IsNullOrEmpty(form[item])) continue;
                 json[item] = form[item];
             }
             return json;

@@ -12,7 +12,7 @@ namespace MCDT
     public class JSON : Dictionary<string, object>
     {
 
-        public object this[string key]
+        public dynamic this[string key]
         {
             get
             {
@@ -28,7 +28,7 @@ namespace MCDT
                 if (base.ContainsKey(key))
                     base[key] = value;
                 else
-                    base.Add(key, value);
+                    this.Add(key, value);
             }
         }
 
@@ -42,6 +42,26 @@ namespace MCDT
             return json;
         }
 
+        /// <summary>
+        /// 只保留数组中的键
+        /// </summary>
+        /// <param name="parms"></param>
+        /// <returns></returns>
+        public JSON Only(params string[] parms)
+        {
+            var keys = this.Keys.Where(s => !parms.Contains(s));
+            List<string> kys = new List<string>();
+            foreach (var item in keys)
+            {
+                kys.Add(item);
+            }
+            foreach (var item in kys)
+            {
+                this.Remove(item);
+            }
+            GC.Collect();
+            return this;
+        }
 
         public static JSON Form(JSON obj)
         {

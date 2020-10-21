@@ -54,7 +54,7 @@ namespace MCDT
         /// <param name="model"></param>
         /// <param name="identityFiled">标识列名称</param>
         /// <returns></returns>
-        public int? Insert(string tableName, dynamic model, string identityFiled = "ID")
+        public int? Insert(string tableName, dynamic model, string identityFiled = "ID", params string[] Ignores)
         {
             List<SqlParameter> parms = GetParameterListByModel(model);
             Type type = model.GetType();
@@ -67,6 +67,7 @@ namespace MCDT
             {
                 foreach (var item in model as Dictionary<string, object>)
                 {
+                    if (Ignores.ToList<string>().Contains(item.Key)) continue;
                     keys.Add(item.Key);
                     colums.Add("@" + item.Key);
                 }
@@ -76,6 +77,7 @@ namespace MCDT
 
                 foreach (var item in pros)
                 {
+                    if (Ignores.ToList<string>().Contains(item.Name)) continue;
                     if (item.GetValue(model) != null)
                     {
                         keys.Add(item.Name);

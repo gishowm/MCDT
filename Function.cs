@@ -241,9 +241,12 @@ namespace MCDT
             JSON json = new JSON();
             foreach (string item in form.Keys)
             {
+                string name = item;
+                if (name.IndexOf("[]") > -1)
+                    name = name.Replace("[]", "");
                 if (ignoreNull)
                     if (string.IsNullOrEmpty(form[item])) continue;
-                json[item] = form[item];
+                json[name] = form[item];
             }
             return json;
         }

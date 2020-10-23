@@ -158,6 +158,19 @@ namespace MCDT
                 return result;
             }
 
+        }  /// <summary>
+           /// 启动一个事务
+           /// </summary>
+           /// <param name="action">回调</param>
+        public void Transaction(Action action)
+        {
+            using (TransactionScope transaction = new TransactionScope())//使用事务
+            {
+                if (Conne.State != ConnectionState.Open)
+                    Conne.Open();
+                action();
+                transaction.Complete();
+            }
         }
 
         /// <summary>

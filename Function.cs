@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -9,7 +10,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace MCDT
 {
@@ -269,6 +270,9 @@ namespace MCDT
             return json;
         }
 
+
+
+
         public static long GetTimeStamp(DateTime dateTime)
         {
             TimeSpan ts = dateTime - new DateTime(1970, 1, 1, 0, 0, 0, 0);
@@ -288,6 +292,59 @@ namespace MCDT
 
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jstr"></param>
+        /// <param name="Istrim">是否去头掐尾</param>
+        /// <returns></returns>
+        public static List<string> ToList(this string jstr, bool Istrim = true)
+        {
+            try
+            {
+                if (Istrim)
+                    jstr = jstr.TrimEnd(']').TrimStart('[');
+                return jstr.Split(',').ToList<string>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("转换 JSON 失败:" + ex.Message);
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jstr"></param>
+        /// <param name="Istrim">是否去头掐尾</param>
+        /// <returns></returns>
+        public static List<JSON> ToJsonList(this string jstr, bool Istrim = true)
+        {
+            List<JSON> list = new List<JSON>();
+            try
+            {
+                var collection = JsonConvert.DeserializeObject<JToken>(jstr);
+                foreach (var item in collection)
+                {
+                    JSON json = new JSON();
+                    foreach (Newtonsoft.Json.Linq.JProperty name in item)
+                    {
+                        json.Add(name.Name, name.Value.ToString());
+                    }
+                    list.Add(json);
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("转换 JSON 失败:" + ex.Message);
+            }
+        }
+
+
         public static long GetTimeStamp()
         {
             TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);

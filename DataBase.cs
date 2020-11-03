@@ -151,10 +151,19 @@ namespace MCDT
         {
             using (TransactionScope transaction = new TransactionScope())//使用事务
             {
-                if (Conne.State != ConnectionState.Open)
-                    Conne.Open();
-                var result = action();
-                transaction.Complete();
+                object result = null;
+                try
+                {
+                    if (Conne.State != ConnectionState.Open)
+                        Conne.Open();
+
+                    result = action();
+                    transaction.Complete();
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
                 return result;
             }
 
@@ -166,10 +175,19 @@ namespace MCDT
         {
             using (TransactionScope transaction = new TransactionScope())//使用事务
             {
-                if (Conne.State != ConnectionState.Open)
-                    Conne.Open();
-                action();
-                transaction.Complete();
+                try
+                {
+                    if (Conne.State != ConnectionState.Open)
+                        Conne.Open();
+                    action();
+                    transaction.Complete();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
             }
         }
 
@@ -239,7 +257,7 @@ namespace MCDT
                         {
                             ParameterName = item.Key,
                             Value = item.Value
-                        });
+                        }); ;
                     }
                 }
                 else
@@ -432,7 +450,25 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
                 return (T)com.ExecuteScalar();
             });
         }
+        /// <summary>
+        /// 查询首行首列
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="model"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public object Value(string sql, dynamic model = null, dynamic defaultValue = null)
+        {
+            var par = GetParametersByModel(model);
 
+            return getSqlCommand(sql, (com) =>
+            {
+                if (par != null && par.Length > 0)
+                    com.Parameters.AddRange(par);
+                if (com.ExecuteScalar() == null) return defaultValue;
+                return com.ExecuteScalar();
+            });
+        }
 
 
         /// <summary>

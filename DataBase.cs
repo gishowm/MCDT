@@ -477,7 +477,7 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
         /// <param name="sql"></param>
         /// <param name="par"></param>
         /// <returns></returns>
-        private SqlDataReader ExecuteReader1(string procname, dynamic model)
+        private SqlDataReader ExecuteReader1(string procname, dynamic model=null)
         {
             var par = GetParametersByModel(model);
             return getSqlCommand(procname, (com) =>
@@ -491,13 +491,14 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
             });
         }
 
+
         /// <summary>
         /// 在线查询，返回SqlDataReader
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="par"></param>
         /// <returns></returns>
-        public SqlDataReader ExecuteReader(string procname, dynamic model)
+        public SqlDataReader ExecuteReader(string procname, dynamic model=null)
         {
             var par = GetParametersByModel(model);
             return getSqlCommand(procname, (com) =>
@@ -511,11 +512,43 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
             });
         }
 
+
+
+        /// <summary>
+        /// 在线查询，返回SqlDataReader
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="par"></param>
+        /// <returns></returns>
+        public List<object> Col(string sql, dynamic model=null)
+        {
+            var par = GetParametersByModel(model);
+            List<object> cols = new List<object>();
+            return getSqlCommand(sql, (com) =>
+            {
+                if (par != null && par.Length > 0)
+                {
+                    com.Parameters.AddRange(par);
+                }
+
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    object data;
+                    while (sdr.Read())
+                    {
+                        data = sdr.GetValue(0);
+                        cols.Add(data== DBNull.Value ? null : data);
+                    }
+                }
+                return cols;
+            });
+        }
+
         /// <summary>
         /// 增删改方法
         /// </summary>
         /// <param name="sql"></param>
-        public int ExecuteNonQuery(string sql, dynamic model)
+        public int ExecuteNonQuery(string sql, dynamic model=null)
         {
             var par = GetParametersByModel(model);
 

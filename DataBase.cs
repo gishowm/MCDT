@@ -24,11 +24,18 @@ namespace MCDT
         /// <summary>
         /// 连接字符串
         /// </summary>
-        /// <param name="connStr"></param>
+        /// <param name="str">连接字符串</param>
         public DataBase(string str)
         {
             Conne = new SqlConnection(str);
         }
+        /// <summary>
+        /// 数据库连接实力
+        /// </summary>
+        /// <param name="Server">服务器名</param>
+        /// <param name="DBName">数据库名</param>
+        /// <param name="LoginUser">登录名</param>
+        /// <param name="Pwd">密码</param>
         public DataBase(string Server, string DBName, string LoginUser, string Pwd)
         {
             string conStr = string.Format("server={0};database={1};user id={2};password={3}", Server, DBName, LoginUser, Pwd);
@@ -36,7 +43,11 @@ namespace MCDT
             Conne = new SqlConnection(conStr);
         }
 
-
+        /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <param name="table">表名</param>
+        /// <param name="dt">dt</param>
         public void Inserts(string table, DataTable dt)
         {
             using (SqlBulkCopy bulkCopy = new SqlBulkCopy(Conne.ConnectionString, SqlBulkCopyOptions.KeepIdentity))
@@ -48,11 +59,12 @@ namespace MCDT
 
 
         /// <summary>
-        /// 
+        /// Insert
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="model"></param>
         /// <param name="identityFiled">标识列名称</param>
+        /// <param name="Ignores">忽略数组中的字段</param>
         /// <returns></returns>
         public int? Insert(string tableName, dynamic model, string identityFiled = "ID", params string[] Ignores)
         {

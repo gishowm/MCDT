@@ -56,7 +56,7 @@ namespace MCDT
                 IJwtValidator validator = new JwtValidator(serializer, provider);
 
                 IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
+                IJwtDecoder decoder = new JwtDecoder(serializer, urlEncoder);
 
                 //获取私钥
                 string secret = GetSecret();

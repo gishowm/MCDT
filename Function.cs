@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using ThoughtWorks.QRCode.Codec;
 
 namespace MCDT
 {
@@ -369,5 +370,46 @@ namespace MCDT
             DateTime targetDt = dtStart.Add(toNow);
             return targetDt;
         }
+
+        public static string QRcode(string url, bool retbase64 = false)
+        {
+
+            Bitmap bt;
+            QRCodeEncoder qrCodeEncoder = new QRCodeEncoder();
+            qrCodeEncoder.QRCodeScale = 8;
+            qrCodeEncoder.QRCodeForegroundColor = Color.Black;
+            qrCodeEncoder.QRCodeBackgroundColor = Color.White;
+            qrCodeEncoder.QRCodeErrorCorrect = QRCodeEncoder.ERROR_CORRECTION.M;
+            qrCodeEncoder.QRCodeEncodeMode = QRCodeEncoder.ENCODE_MODE.BYTE;
+            //qrCodeEncoder.setStructureappend(400, 400, 5);
+
+            string strbaser64;
+            bt = qrCodeEncoder.Encode(url, Encoding.UTF8);
+
+
+            Bitmap bitmap = new Bitmap(bt.Width + 20, bt.Height + 20);
+            Graphics g = Graphics.FromImage(bitmap);
+            g.Clear(Color.White);
+            g.DrawRectangle(new Pen(Color.White), new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+            g.DrawImage(bt, new PointF(10, 10));
+
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                strbaser64 = Convert.ToBase64String(ms.GetBuffer());
+            }
+            if (retbase64 == false)
+            {
+                return "data:image/jpg;base64," + strbaser64;
+            }
+            else
+            {
+                return strbaser64;
+            }
+
+        }
+
+
     }
 }

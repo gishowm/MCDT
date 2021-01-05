@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrapDownList", "..\DrapDown
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreMvc", "..\CoreMvc\CoreMvc.csproj", "{3E0B7FA7-382F-44B6-B6CD-E87FC2A087EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "..\Test\Test.csproj", "{FD37227D-190B-49D7-A71B-FD685FC7F78A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{3E0B7FA7-382F-44B6-B6CD-E87FC2A087EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E0B7FA7-382F-44B6-B6CD-E87FC2A087EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E0B7FA7-382F-44B6-B6CD-E87FC2A087EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD37227D-190B-49D7-A71B-FD685FC7F78A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD37227D-190B-49D7-A71B-FD685FC7F78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD37227D-190B-49D7-A71B-FD685FC7F78A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD37227D-190B-49D7-A71B-FD685FC7F78A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

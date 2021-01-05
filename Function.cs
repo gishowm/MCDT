@@ -273,13 +273,21 @@ namespace MCDT
 
 
 
-
+        /// <summary>
+        /// 根据时间获取时间戳
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         public static long GetTimeStamp(DateTime dateTime)
         {
             TimeSpan ts = dateTime - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalSeconds);
         }
-
+        /// <summary>
+        /// string转为Json对象
+        /// </summary>
+        /// <param name="jstr"></param>
+        /// <returns></returns>
         public static JSON toJSON(this string jstr)
         {
             try

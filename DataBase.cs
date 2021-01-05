@@ -24,11 +24,18 @@ namespace MCDT
         /// <summary>
         /// 连接字符串
         /// </summary>
-        /// <param name="connStr"></param>
+        /// <param name="str">连接字符串</param>
         public DataBase(string str)
         {
             Conne = new SqlConnection(str);
         }
+        /// <summary>
+        /// 数据库连接实力
+        /// </summary>
+        /// <param name="Server">服务器名</param>
+        /// <param name="DBName">数据库名</param>
+        /// <param name="LoginUser">登录名</param>
+        /// <param name="Pwd">密码</param>
         public DataBase(string Server, string DBName, string LoginUser, string Pwd)
         {
             string conStr = string.Format("server={0};database={1};user id={2};password={3}", Server, DBName, LoginUser, Pwd);
@@ -36,7 +43,11 @@ namespace MCDT
             Conne = new SqlConnection(conStr);
         }
 
-
+        /// <summary>
+        /// 批量插入
+        /// </summary>
+        /// <param name="table">表名</param>
+        /// <param name="dt">dt</param>
         public void Inserts(string table, DataTable dt)
         {
             using (SqlBulkCopy bulkCopy = new SqlBulkCopy(Conne.ConnectionString, SqlBulkCopyOptions.KeepIdentity))
@@ -48,11 +59,12 @@ namespace MCDT
 
 
         /// <summary>
-        /// 
+        /// Insert
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="model"></param>
         /// <param name="identityFiled">标识列名称</param>
+        /// <param name="Ignores">忽略数组中的字段</param>
         /// <returns></returns>
         public int? Insert(string tableName, dynamic model, string identityFiled = "ID", params string[] Ignores)
         {
@@ -477,7 +489,7 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
         /// <param name="sql"></param>
         /// <param name="par"></param>
         /// <returns></returns>
-        private SqlDataReader ExecuteReader1(string procname, dynamic model)
+        private SqlDataReader ExecuteReader1(string procname, dynamic model=null)
         {
             var par = GetParametersByModel(model);
             return getSqlCommand(procname, (com) =>
@@ -491,13 +503,14 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
             });
         }
 
+
         /// <summary>
         /// 在线查询，返回SqlDataReader
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="par"></param>
         /// <returns></returns>
-        public SqlDataReader ExecuteReader(string procname, dynamic model)
+        public SqlDataReader ExecuteReader(string procname, dynamic model=null)
         {
             var par = GetParametersByModel(model);
             return getSqlCommand(procname, (com) =>
@@ -511,11 +524,43 @@ WHERE   number BETWEEN (" + page + "-1)*" + limit + "+1 AND " + page + "*" + lim
             });
         }
 
+
+
+        /// <summary>
+        /// 在线查询，返回SqlDataReader
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="par"></param>
+        /// <returns></returns>
+        public List<object> Col(string sql, dynamic model=null)
+        {
+            var par = GetParametersByModel(model);
+            List<object> cols = new List<object>();
+            return getSqlCommand(sql, (com) =>
+            {
+                if (par != null && par.Length > 0)
+                {
+                    com.Parameters.AddRange(par);
+                }
+
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    object data;
+                    while (sdr.Read())
+                    {
+                        data = sdr.GetValue(0);
+                        cols.Add(data== DBNull.Value ? null : data);
+                    }
+                }
+                return cols;
+            });
+        }
+
         /// <summary>
         /// 增删改方法
         /// </summary>
         /// <param name="sql"></param>
-        public int ExecuteNonQuery(string sql, dynamic model)
+        public int ExecuteNonQuery(string sql, dynamic model=null)
         {
             var par = GetParametersByModel(model);
 

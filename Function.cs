@@ -322,6 +322,29 @@ namespace MCDT
             }
         }
 
+         /// <summary>
+        /// 根据概率返回索引
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <returns></returns>
+        public static int ProbabilityRandomRumber(decimal[] rate)
+        {
+            int total = 0;
+            for (int i = 0; i < rate.Length; i++)
+            {
+                total += Convert.ToInt32(rate[i] * 1000);
+            }
+            Random myRandom = new Random();
+            int r = myRandom.Next(0, total);
+            int t = 0;
+            for (int i = 0; i < rate.Length; i++)
+            {
+                t += Convert.ToInt32(rate[i] * 1000);
+                if (r < t)
+                    return i;
+            }
+            return 0;
+        }
 
 
         /// <summary>
